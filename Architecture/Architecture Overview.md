@@ -1,6 +1,9 @@
 ## Functional description
 The architecture outlines a system where an OTM-encoded threat model is processed to generate queries for extracting attestation evidence from a database of confidential computing documentation. The process leverages **Large Language Models (LLMs)** for query generation and evidence synthesis.
 
+![System overview](/Diagrams/Agentic-Attestation.png)
+
+
 ## Key Components
 
 | Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | Input                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | Output                                                                                                                                                                                                                                                                                             |
