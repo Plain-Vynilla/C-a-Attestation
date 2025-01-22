@@ -1,8 +1,12 @@
 # C-a-Attestation
 
-This repository contains a high-level architecture and specifications to implement a flexible remote attestation orchestration that can be integrated in a data space negotiation protocol like IDSA.
+The Confidential Computing panorama is fragmented across platforms, vendors, and technologies. While modern CPUs can assure that a workload is executed in total isolation from the running environment through TEEs, these cover only part of the Threat Models. For instance, a workload in a TEE could still exfiltrate information, inadvertently or on purpose.
+We need a way to implement Confidential Computing at more than one layer of the IT stack and, most of all, we need to be able to Attest that the composition of these Confidential Computing layers responds to precise security requirements.
 
-## The problem we solve.
+This repository contains a high-level architecture and component specifications to implement a remote attestation orchestration that adapts to the confidentiality requirements associated with the workload (application/AI model) to protect.
+We make use of an Encoder LLM to query a knowledge base on specific confidential computing and attestation toolchains; the results are ranked and refined and further mapped to the availability of such toolchains. A Decoder LLM generates the Attestation Evidence and its Expected Values, and it feeds an Attestation Orchestrator that deploy the different tech stacks and the required policies.
+
+## The problem(s) we solve.
 
 We want to solve the problem of running an application at a third party service provider, while preserving security and confidentiality requirements intact. In a nutshell, the system should answer questions like:
 
@@ -27,9 +31,17 @@ The security mechanisms must be validated by a trusted entity, commonly by verif
 
 And because the different stack layers of a running environment require very different Remote Attestation mechanisms, we combine the relevant ones for each confidentiality concern, this is what we call **Composable Attestation**.
 
-## What C & a stand for?
+## What makes this architecture different from a generic LLM-based system?
 
-Well, you guessed it: "C" stands for Composable, but what about "a?". "A" stands for agentic, where the agent is the autonomous orchestrator that triggers the composition of the attestation processes, providing them with the expected values derived from our security requirements.
+It is true that the LLM is the layer that provide adaptiveness, however, LLM are known to provide unprecise results. To obviate this issue, the LLM is used to isolate requirements from **precise knowledge** so that we reach the precision of a rule-based system. Further rankoing and filtering eliminate spurious and duplicate Evidence. The latter is needed to avoid compose attestations that overlap in terms of security.
+
+Precise knowledge is built by tokenizing generic knowledge about Confidential Computing and adding a number of "conditioning" rules that "align" the prompting with the result. The use of precise inputs, like schema-based Threat Models, makes the mapping even more precise.
+
+## Integration with Data Spaces and contract-based exchanges
+
+Both the Threat Model and Attestation Evidence are represented with schema-based, semantic specifications that can be parsed and analysed by common policy operators (i.e., Equality, Similarity, Negation, etc.)
+In a most common use case, an Application Provider receives a request from a data space participant to deploy and execute the Application (workload). The two parties agree on a Threat Model that preserves both sides' security requirements, like: no access to source code or data, and no exfiltration of results belonging to the requesting party.
+A data space connector can act as the governance gateway of such deployment, because it can provide one or more Attestation Services with the Reference Values to be appraised. 
 
 ## Organization of the repository
 
